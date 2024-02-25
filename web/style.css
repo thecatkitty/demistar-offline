@@ -1,0 +1,110 @@
+@font-face {
+    font-family: wf-multicolore;
+    src: url(multicolore.woff2);
+}
+
+@font-face {
+    font-family: wf-gidole;
+    src: url(gidole.woff2);
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    width: 100vw;
+    height: 56.25vw;
+    overflow: hidden;
+    font-size: .9vw;
+
+    background-color: black;
+    color: white;
+    font-family: wf-gidole, sans-serif;
+}
+
+body>section {
+    height: 100%;
+    width: 50%;
+    float: left;
+}
+
+#spotlight {
+    background-image: url(img/bg_lh.jpg);
+    background-repeat: no-repeat;
+    background-size: 100%;
+
+    font-family: wf-multicolore, sans-serif;
+    font-size: 5vw;
+    text-align: center;
+    -webkit-text-stroke: .04em black;
+}
+
+body[data-spotlight="no"] #spotlight {
+    display: none;
+}
+
+#spotlight>div {
+    margin: 1em;
+}
+
+#spotlight>div.progress {
+    margin: 0;
+    height: 2.5vw;
+    width: 0;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+#spotlight .timespan,
+#spotlight .host {
+    font-size: 50%;
+}
+
+#list {
+    box-sizing: border-box;
+    font-size: 3em;
+    padding-left: .5em;
+    padding-top: .25em;
+}
+
+body[data-spotlight="no"] #list {
+    width: 100%;
+}
+
+#list ul,
+#list li {
+    display: block;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+#list li {
+    height: 7.03125vw;
+}
+
+#list li span {
+    display: block;
+    width: auto;
+}
+
+#list .time {
+    width: 9vw;
+    float: left;
+}
+
+#list .title {
+    height: 1.25em;
+    overflow: hidden;
+    white-space: nowrap;
+    margin-right: .5em;
+}
+
+#list .host {
+    clear: both;
+    font-size: 50%;
+    padding-left: 9vw;
+}
+
+#templates {
+    display: none;
+}
