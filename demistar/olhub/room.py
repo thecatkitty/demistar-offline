@@ -6,7 +6,7 @@ from datetime import datetime
 from PIL import Image, ImageDraw, ImageFont
 
 from . import textdraw
-from .schedule import Meeting
+from .timeline import Meeting
 
 
 TITLE_SIZE = 80

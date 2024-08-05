@@ -4,7 +4,7 @@ import os
 from datetime import datetime, timedelta
 from PIL import Image, ImageFont, ImageDraw
 
-from tritostar import schedule, textdraw
+from demistar.olhub import textdraw, timeline
 
 
 START = datetime(2024, 2, 23, 18, 00)
@@ -37,14 +37,14 @@ font_list_small = ImageFont.truetype("gidole.ttf", int(LIST_SIZE / 2))
 bg = Image.open("bg_pt.jpg")
 
 
-sch = list(schedule.from_file("harmonogram.txt", ROOMS.keys(), True))
+sch = list(timeline.from_file("harmonogram.txt", ROOMS.keys(), True))
 prev = list()
 
 now = START
 while now < END:
     print(f"{now}: ", end="")
 
-    def upcoming(m: schedule.Meeting): return m.end() > now
+    def upcoming(m: timeline.Meeting): return m.end() > now
 
     img = bg.crop((0, 0, bg.width, bg.height * 3))
     draw = ImageDraw.Draw(img)

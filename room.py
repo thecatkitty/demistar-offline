@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from PIL import Image
 
-from tritostar import schedule, RoomDisplay
+from demistar.olhub import RoomDisplay, timeline
 
 
 START = datetime(2024, 2, 23, 18, 00)
@@ -19,9 +19,9 @@ ROOMS = {
 bg = Image.open("bg_ph.jpg")
 
 
-sch_main = list(schedule.from_file("harmonogram.txt", ["main"], True))
+sch_main = list(timeline.from_file("harmonogram.txt", ["main"], True))
 for room in ROOMS.keys():
-    sch_room = list(schedule.from_file("harmonogram.txt", [room], False))
+    sch_room = list(timeline.from_file("harmonogram.txt", [room], False))
     prev: RoomDisplay = None
 
     now = START
@@ -29,7 +29,7 @@ for room in ROOMS.keys():
         if now.hour < 3 or now.hour >= 10:
             print(f"{ROOMS[room]} {now}: ", end="")
 
-            def upcoming(m: schedule.Meeting): return m.end() > now
+            def upcoming(m: timeline.Meeting): return m.end() > now
             display = RoomDisplay(room, ROOMS[room], list(
                 filter(upcoming, sch_room)), "Mainroom", list(filter(upcoming, sch_main)), now)
 
