@@ -40,8 +40,7 @@ class HubDisplay:
             raise ValueError("Too many hub caption lines")
 
         scrolled = list()
-        title_width = img.width - \
-            (int(LIST_SIZE * 5.5) if 2 == len(self.caption) else int(LIST_SIZE * 4))
+        title_width = img.width - int(LIST_SIZE * 5.5)
 
         y_offset = top_img.height
         for meeting in self.upcoming:
