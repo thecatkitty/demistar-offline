@@ -1,7 +1,9 @@
 import math
 import os
+import subprocess
 
 from datetime import datetime
+from ffmpy import FFmpeg
 from PIL import Image, ImageDraw
 
 
@@ -20,14 +22,19 @@ class ScrollingWriter:
         # Nothing to scroll, single frame
         if len(scrolled) == 0:
             if progress:
-                print("single frame")
+                print("single frame", end='')
             self.frame.save(f"out/{self.prefix}/{self.prefix}-{timestamp}.jpg")
             return 1
 
         # Render all frames
-        os.makedirs(f"out/{self.prefix}/{self.prefix}-{timestamp}", exist_ok=True)
         length = max(text.width for _, text in scrolled) + window_width
         digits = math.ceil(math.log10(length))
+
+        ff = FFmpeg(
+            global_options=['-hide_banner', '-loglevel error'],
+            inputs={'pipe:0': '-y -f image2pipe -r 30'},
+            outputs={f"out/{self.prefix}/{self.prefix}-{timestamp}.mp4": None})
+        proc = subprocess.Popen(ff.cmd, stdin=subprocess.PIPE)
 
         if progress:
             print(" " * (digits * 2 + 1), end="")
@@ -39,12 +46,11 @@ class ScrollingWriter:
                 frame_draw.bitmap(position, text.crop(
                     (i - window_width, 0, i, text.height)))
 
-            suffix = str(i).zfill(digits)
-            frame.save(
-                f"out/{self.prefix}/{self.prefix}-{timestamp}/{self.prefix}-{timestamp}-{suffix}.jpg")
-
+            frame.save(proc.stdin, format="jpeg")
             if progress:
                 print("\b" * (digits * 2 + 1) +
                       f"{(i + 1):{digits}}/{length}", end="", flush=True)
 
+        proc.stdin.close()
+        assert 0 == proc.wait()
         return length
