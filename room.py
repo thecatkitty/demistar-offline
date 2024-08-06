@@ -19,7 +19,7 @@ for room in config.rooms.keys():
 
             def upcoming(m: timeline.Meeting): return m.end() > now
             display = RoomDisplay(room, config.rooms[room], list(
-                filter(upcoming, sch_room)), "Mainroom", list(filter(upcoming, sch_main)), now)
+                filter(upcoming, sch_room)), "Mainroom", list(filter(upcoming, sch_main)), config, now)
 
             if RoomDisplay.no_change(prev, display):
                 print("no change")

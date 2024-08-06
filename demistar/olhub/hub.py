@@ -2,22 +2,12 @@ import math
 import os
 
 from datetime import datetime
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 
 from . import textdraw
 from .config import Configuration
+from .metrics.hub import *
 from .timeline import Meeting
-
-TITLE_SIZE = 120
-TITLE_STROKE = 6
-TITLE_YPOS = TITLE_SIZE * 1.5
-
-LIST_SIZE = 48
-LIST_ROW = 80
-
-font_title = ImageFont.truetype("multicolore.otf", TITLE_SIZE)
-font_list_big = ImageFont.truetype("gidole.ttf", LIST_SIZE)
-font_list_small = ImageFont.truetype("gidole.ttf", int(LIST_SIZE / 2))
 
 
 class HubDisplay:
@@ -26,6 +16,7 @@ class HubDisplay:
         self.caption = caption
         self.rooms = config.rooms
         self.upcoming = upcoming[:16]
+        self.fonts = config.hub_fonts
 
     def print(self) -> None:
         print(f"HubDisplay at {self.time}:")
@@ -39,36 +30,37 @@ class HubDisplay:
 
         if 1 == len(self.caption):
             textdraw.center(draw, self.caption[0], TITLE_YPOS + TITLE_SIZE *
-                            0.75, img.width, font=font_title, stroke_width=TITLE_STROKE)
+                            0.75, img.width, font=self.fonts['spot'], stroke_width=TITLE_STROKE)
         elif 2 == len(self.caption):
             textdraw.center(
-                draw, self.caption[0], TITLE_YPOS, img.width, font=font_title, stroke_width=TITLE_STROKE)
+                draw, self.caption[0], TITLE_YPOS, img.width, font=self.fonts['spot'], stroke_width=TITLE_STROKE)
             textdraw.center(draw, self.caption[1], TITLE_YPOS + TITLE_SIZE *
-                            1.1, img.width, font=font_title, stroke_width=TITLE_STROKE)
+                            1.1, img.width, font=self.fonts['spot'], stroke_width=TITLE_STROKE)
         else:
             raise ValueError("Too many hub caption lines")
 
         scrolled = list()
-        title_width = img.width - (int(LIST_SIZE * 5.5) if 2 == len(self.caption) else int(LIST_SIZE * 4))
+        title_width = img.width - \
+            (int(LIST_SIZE * 5.5) if 2 == len(self.caption) else int(LIST_SIZE * 4))
 
         y_offset = top_img.height
         for meeting in self.upcoming:
             draw.text((LIST_SIZE * 0.5, y_offset + LIST_SIZE * 0.05),
-                      meeting.start.strftime("%H:%M"), "#fff", font=font_list_big)
+                      meeting.start.strftime("%H:%M"), "#fff", font=self.fonts['listl'])
             draw.text((LIST_SIZE * 3.5, y_offset + LIST_SIZE * 1.1),
-                      meeting.host, "#fff", font=font_list_small)
+                      meeting.host, "#fff", font=self.fonts['lists'])
             draw.text((img.width - LIST_SIZE * 1.5, y_offset + LIST_SIZE * 0.05),
-                      self.rooms[meeting.room].split()[-1], "#fff", font=font_list_big)
+                      self.rooms[meeting.room].split()[-1], "#fff", font=self.fonts['listl'])
 
             _, _, width, height = draw.textbbox(
-                (0, 0), meeting.title, font=font_list_big)
+                (0, 0), meeting.title, font=self.fonts['listl'])
             position = (int(LIST_SIZE * 3.5), int(y_offset + LIST_SIZE * 0.05))
             if width > title_width:
                 scrolled.append((position, textdraw.render(
-                    width, height, meeting.title, font_list_big)))
+                    width, height, meeting.title, self.fonts['listl'])))
             else:
                 draw.text((LIST_SIZE * 3.5, y_offset + LIST_SIZE * 0.05),
-                          meeting.title, "#fff", font=font_list_big)
+                          meeting.title, "#fff", font=self.fonts['listl'])
 
             y_offset += LIST_ROW
 
