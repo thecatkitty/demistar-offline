@@ -17,7 +17,7 @@ parser.add_argument('-t', '--title',
                     help='hub title')
 args = parser.parse_args()
 
-is_hub = len(args.room) > 1
+is_hub = args.title is not None
 config = Configuration(args.config)
 sch = list(timeline.from_file(config.schedule_file, args.room, is_hub))
 
