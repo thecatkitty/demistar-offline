@@ -15,7 +15,7 @@ class Configuration:
         self.end_time = datetime.strptime(
             parser['event']['end'], '%Y-%m-%d %H:%M')
         self.schedule_file = parser['event']['schedule']
-        self.rooms = {k: tuple(s.strip() for s in v.split(',', 1))[0]
+        self.rooms = {k: tuple(s.strip() for s in v.split(',', 1))
                       for k, v in parser['rooms'].items()}
 
         self.hub_fonts = {

@@ -50,7 +50,7 @@ class HubDisplay:
             draw.text((LIST_SIZE * 3.5, y_offset + LIST_SIZE * 1.1),
                       meeting.host, "#fff", font=self.fonts['lists'])
             draw.text((img.width - LIST_SIZE * 1.5, y_offset + LIST_SIZE * 0.05),
-                      self.rooms[meeting.room].split()[-1], "#fff", font=self.fonts['listl'])
+                      self.rooms[meeting.room][1], "#fff", font=self.fonts['listl'])
 
             _, _, width, height = draw.textbbox(
                 (0, 0), meeting.title, font=self.fonts['listl'])

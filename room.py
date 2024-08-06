@@ -15,10 +15,10 @@ for room in config.rooms.keys():
     now = config.start_time
     while now < config.end_time:
         if now.hour < 3 or now.hour >= 10:
-            print(f"{config.rooms[room]} {now}: ", end="")
+            print(f"{config.rooms[room][0]} {now}: ", end="")
 
             def upcoming(m: timeline.Meeting): return m.end() > now
-            display = RoomDisplay(room, config.rooms[room], list(
+            display = RoomDisplay(room, config.rooms[room][0], list(
                 filter(upcoming, sch_room)), "Mainroom", list(filter(upcoming, sch_main)), config, now)
 
             if RoomDisplay.no_change(prev, display):
