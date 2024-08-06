@@ -99,9 +99,8 @@ class HubDisplay:
 
         return length
 
-    @staticmethod
-    def no_change(left: object, right: object):
-        if left is None:
+    def no_change(self, prev: object) -> bool:
+        if prev is None:
             return False
 
-        return all(l.title == r.title for l, r in zip(left.upcoming, right.upcoming))
+        return all(l.title == r.title for l, r in zip(prev.upcoming, self.upcoming))

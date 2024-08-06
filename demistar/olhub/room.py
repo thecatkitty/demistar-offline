@@ -153,15 +153,14 @@ class RoomDisplay:
         if progress:
             print()
 
-    @staticmethod
-    def no_change(left: object, right: object):
-        if left is None:
+    def no_change(self, prev: object):
+        if prev is None:
             return False
 
-        left_spotlight = "" if left.spotlight is None else left.spotlight.title
-        right_spotlight = "" if right.spotlight is None else right.spotlight.title
+        left_spotlight = "" if prev.spotlight is None else prev.spotlight.title
+        right_spotlight = "" if self.spotlight is None else self.spotlight.title
         left_featured = "" if len(
-            left.featured) == 0 else left.featured[0].title
+            prev.featured) == 0 else prev.featured[0].title
         right_featured = "" if len(
-            right.featured) == 0 else right.featured[0].title
+            self.featured) == 0 else self.featured[0].title
         return left_spotlight == right_spotlight and left_featured == right_featured
