@@ -125,7 +125,7 @@ class RoomDisplay:
         if len(scrolled) == 0:
             if progress:
                 print("single frame")
-            img.save(f"room/{self.room}-{timestamp}.jpg")
+            img.save(f"room/{self.room}/{self.room}-{timestamp}.jpg")
             return
 
         # Render all frames
