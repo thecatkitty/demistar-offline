@@ -1,37 +1,22 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 from PIL import Image
 
-from demistar.olhub import HubDisplay, timeline
-
-
-START = datetime(2024, 2, 23, 18, 00)
-END = datetime(2024, 2, 25, 17, 00)
-ROOMS = {
-#    "main": "Mainroom",
-#    "k1a": "Sala 1A",
-#    "k1b": "Sala 1B",
-#    "k1c": "Sala 1C",
-#    "k2": "Sala 2",
-#    "k3": "Sala 3",
-#    "k4": "Sala 4",
-    "gc": "Gry C",
-    "gg": "Gry G",
-}
+from demistar.olhub import Configuration, HubDisplay, timeline
 
 
 bg = Image.open("bg_pt.jpg")
 
-
-sch = list(timeline.from_file("harmonogram.txt", ROOMS.keys(), True))
+config = Configuration("demistar.ini")
+sch = list(timeline.from_file(config.schedule_file, config.rooms.keys(), True))
 prev: HubDisplay = None
 
-now = START
-while now < END:
+now = config.start_time
+while now < config.end_time:
     print(f"{now}: ", end="")
 
     def upcoming(m: timeline.Meeting): return m.end() > now
     display = HubDisplay(["Gry ciche", "i głośne"], list(
-        sorted(filter(upcoming, sch), key=lambda m: m.start)), ROOMS, now)
+        sorted(filter(upcoming, sch), key=lambda m: m.start)), config, now)
 
     if HubDisplay.no_change(prev, display):
         print("no change")

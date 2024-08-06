@@ -5,6 +5,7 @@ from datetime import datetime
 from PIL import Image, ImageDraw, ImageFont
 
 from . import textdraw
+from .config import Configuration
 from .timeline import Meeting
 
 TITLE_SIZE = 120
@@ -20,10 +21,10 @@ font_list_small = ImageFont.truetype("gidole.ttf", int(LIST_SIZE / 2))
 
 
 class HubDisplay:
-    def __init__(self, caption: list[str], upcoming: list[Meeting], rooms: dict[str, str], now: datetime) -> None:
+    def __init__(self, caption: list[str], upcoming: list[Meeting], config: Configuration, now: datetime) -> None:
         self.time = now
         self.caption = caption
-        self.rooms = rooms
+        self.rooms = config.rooms
         self.upcoming = upcoming[:16]
 
     def print(self) -> None:
