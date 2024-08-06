@@ -118,18 +118,18 @@ class RoomDisplay:
             y_offset += LIST_ROW
 
         # Create subdirectories
-        os.makedirs(f"room/{self.room}", exist_ok=True)
+        os.makedirs(f"out/{self.room}", exist_ok=True)
         timestamp = f"{self.time:%Y%m%dT%H%M}"
 
         # Nothing to scroll, single frame
         if len(scrolled) == 0:
             if progress:
                 print("single frame")
-            img.save(f"room/{self.room}/{self.room}-{timestamp}.jpg")
+            img.save(f"out/{self.room}/{self.room}-{timestamp}.jpg")
             return
 
         # Render all frames
-        os.makedirs(f"room/{self.room}/{self.room}-{timestamp}", exist_ok=True)
+        os.makedirs(f"out/{self.room}/{self.room}-{timestamp}", exist_ok=True)
         length = max(text.width for _, text in scrolled) + title_width
         digits = math.ceil(math.log10(length))
 
@@ -144,7 +144,7 @@ class RoomDisplay:
                     (i - title_width, 0, i, text.height)))
                 suffix = str(i).zfill(digits)
                 frame.save(
-                    f"room/{self.room}/{self.room}-{timestamp}/{self.room}-{timestamp}-{suffix}.jpg")
+                    f"out/{self.room}/{self.room}-{timestamp}/{self.room}-{timestamp}-{suffix}.jpg")
 
             if progress:
                 print("\b" * (digits * 2 + 1) +

@@ -11,6 +11,8 @@ parser.add_argument('-c', '--config',
                     help='configuration file path', default='demistar.ini')
 parser.add_argument('-f', '--feature',
                     help='featured room identifier', metavar='ROOM')
+parser.add_argument('-p', '--prefix',
+                    help='hub output file name prefix', metavar='PREFIX', default='hub')
 parser.add_argument('-t', '--title',
                     help='hub title')
 args = parser.parse_args()
@@ -30,7 +32,7 @@ def get_display(now: datetime) -> object:
     def upcoming(m: timeline.Meeting): return m.end() > now
 
     if is_hub:
-        return HubDisplay(args.title.split(';'), list(sorted(filter(upcoming, sch), key=lambda m: m.start)), config, now)
+        return HubDisplay(args.prefix, args.title.split(';'), list(sorted(filter(upcoming, sch), key=lambda m: m.start)), config, now)
 
     room = args.room[0]
     return RoomDisplay(room, config.rooms[room][0], list(filter(upcoming, sch)), feat_title, list(filter(upcoming, feat)), config, now)

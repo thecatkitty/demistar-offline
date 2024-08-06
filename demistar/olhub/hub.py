@@ -11,8 +11,9 @@ from .timeline import Meeting
 
 
 class HubDisplay:
-    def __init__(self, caption: list[str], upcoming: list[Meeting], config: Configuration, now: datetime) -> None:
+    def __init__(self, prefix: str, caption: list[str], upcoming: list[Meeting], config: Configuration, now: datetime) -> None:
         self.time = now
+        self.prefix = prefix
         self.caption = caption
         self.rooms = config.rooms
         self.upcoming = upcoming[:16]
@@ -63,17 +64,20 @@ class HubDisplay:
 
             y_offset += LIST_ROW
 
+        # Create subdirectories
+        os.makedirs(f"out/{self.prefix}", exist_ok=True)
         timestamp = f"{self.time:%Y%m%dT%H%M}"
 
         # Nothing to scroll, single frame
         if len(scrolled) == 0:
             if progress:
                 print("single frame")
-            img.save(f"hub/hg-{timestamp}.jpg")
+            img.save(f"out/{self.prefix}/{self.prefix}-{timestamp}.jpg")
             return 1
 
         # Render all frames
-        os.makedirs(f"hub/hg-{timestamp}", exist_ok=True)
+        os.makedirs(
+            f"out/{self.prefix}/{self.prefix}-{timestamp}", exist_ok=True)
         length = max(text.width for _, text in scrolled) + title_width
         digits = math.ceil(math.log10(length))
 
@@ -88,7 +92,7 @@ class HubDisplay:
                     (i - title_width, 0, i, text.height)))
                 suffix = str(i).zfill(digits)
                 frame.save(
-                    f"hub/hg-{timestamp}/hg-{timestamp}-{suffix}.jpg")
+                    f"out/{self.prefix}/{self.prefix}-{timestamp}/{self.prefix}-{timestamp}-{suffix}.jpg")
 
             if progress:
                 print("\b" * (digits * 2 + 1) +
