@@ -25,8 +25,6 @@ if not is_hub and args.feature is not None:
     feat = list(timeline.from_file(config.schedule_file, [args.feature], True))
     feat_title = config.rooms[args.feature][0]
 
-bg = Image.open("bg_pt.jpg" if is_hub else "bg_ph.jpg")
-
 
 def get_display(now: datetime) -> object:
     def upcoming(m: timeline.Meeting): return m.end() > now
@@ -38,6 +36,7 @@ def get_display(now: datetime) -> object:
     return RoomDisplay(room, config.rooms[room][0], list(filter(upcoming, sch)), feat_title, list(filter(upcoming, feat)), config, now)
 
 
+bg = Image.open(config.hub_bg if is_hub else config.room_bg)
 prev = None
 now = config.start_time
 while now < config.end_time:

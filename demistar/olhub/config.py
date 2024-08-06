@@ -17,6 +17,9 @@ class Configuration:
         self.schedule_file = parser['event']['schedule']
         self.rooms = {k: tuple(s.strip() for s in v.split(',', 1))
                       for k, v in parser['rooms'].items()}
+        
+        self.hub_bg = parser['backgrounds']['hub']
+        self.room_bg = parser['backgrounds']['room']
 
         self.hub_fonts = {
             'spot': ImageFont.truetype(parser['spotlight']['font'], hub.TITLE_SIZE),
