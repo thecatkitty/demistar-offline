@@ -1,14 +1,13 @@
-import math
-import os
 import textwrap
 
 from datetime import datetime
-from PIL import Image, ImageDraw
+from PIL import Image
 
 from . import textdraw
 from .config import Configuration
 from .metrics.room import *
 from .timeline import Meeting
+from .writer import ScrollingWriter
 
 
 class RoomDisplay:
@@ -41,9 +40,10 @@ class RoomDisplay:
             print("   ", meeting)
         print()
 
-    def save_image(self, top_half: Image.Image, progress: bool = False):
-        img = top_half.crop((0, 0, top_half.width, top_half.height * 2))
-        draw = ImageDraw.Draw(img)
+    def save_image(self, top_half: Image.Image, progress: bool = False) -> int:
+        writer = ScrollingWriter(self.room, top_half)
+        img = writer.frame
+        draw = writer.draw
 
         if self.spotlight is not None:
             # Spotlight appointment begin and end time
@@ -117,41 +117,10 @@ class RoomDisplay:
 
             y_offset += LIST_ROW
 
-        # Create subdirectories
-        os.makedirs(f"out/{self.room}", exist_ok=True)
-        timestamp = f"{self.time:%Y%m%dT%H%M}"
-
-        # Nothing to scroll, single frame
-        if len(scrolled) == 0:
-            if progress:
-                print("single frame")
-            img.save(f"out/{self.room}/{self.room}-{timestamp}.jpg")
-            return
-
-        # Render all frames
-        os.makedirs(f"out/{self.room}/{self.room}-{timestamp}", exist_ok=True)
-        length = max(text.width for _, text in scrolled) + title_width
-        digits = math.ceil(math.log10(length))
-
-        if progress:
-            print(" " * (digits * 2 + 1), end="")
-
-        for i in range(length):
-            frame = img.copy()
-            frame_draw = ImageDraw.Draw(frame)
-            for position, text in scrolled:
-                frame_draw.bitmap(position, text.crop(
-                    (i - title_width, 0, i, text.height)))
-                suffix = str(i).zfill(digits)
-                frame.save(
-                    f"out/{self.room}/{self.room}-{timestamp}/{self.room}-{timestamp}-{suffix}.jpg")
-
-            if progress:
-                print("\b" * (digits * 2 + 1) +
-                      f"{(i + 1):{digits}}/{length}", end="", flush=True)
-
+        result = writer.save(self.time, scrolled, title_width, progress)
         if progress:
             print()
+        return result
 
     def no_change(self, prev: object):
         if prev is None:

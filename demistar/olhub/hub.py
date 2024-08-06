@@ -1,13 +1,11 @@
-import math
-import os
-
 from datetime import datetime
-from PIL import Image, ImageDraw
+from PIL import Image
 
 from . import textdraw
 from .config import Configuration
 from .metrics.hub import *
 from .timeline import Meeting
+from .writer import ScrollingWriter
 
 
 class HubDisplay:
@@ -26,8 +24,9 @@ class HubDisplay:
         print()
 
     def save_image(self, top_img: Image.Image, progress: bool = False) -> int:
-        img = top_img.crop((0, 0, top_img.width, top_img.height * 3))
-        draw = ImageDraw.Draw(img)
+        writer = ScrollingWriter(self.prefix, top_img)
+        img = writer.frame
+        draw = writer.draw
 
         if 1 == len(self.caption):
             textdraw.center(draw, self.caption[0], TITLE_YPOS + TITLE_SIZE *
@@ -64,44 +63,10 @@ class HubDisplay:
 
             y_offset += LIST_ROW
 
-        # Create subdirectories
-        os.makedirs(f"out/{self.prefix}", exist_ok=True)
-        timestamp = f"{self.time:%Y%m%dT%H%M}"
-
-        # Nothing to scroll, single frame
-        if len(scrolled) == 0:
-            if progress:
-                print("single frame")
-            img.save(f"out/{self.prefix}/{self.prefix}-{timestamp}.jpg")
-            return 1
-
-        # Render all frames
-        os.makedirs(
-            f"out/{self.prefix}/{self.prefix}-{timestamp}", exist_ok=True)
-        length = max(text.width for _, text in scrolled) + title_width
-        digits = math.ceil(math.log10(length))
-
-        if progress:
-            print(" " * (digits * 2 + 1), end="")
-
-        for i in range(length):
-            frame = img.copy()
-            frame_draw = ImageDraw.Draw(frame)
-            for position, text in scrolled:
-                frame_draw.bitmap(position, text.crop(
-                    (i - title_width, 0, i, text.height)))
-                suffix = str(i).zfill(digits)
-                frame.save(
-                    f"out/{self.prefix}/{self.prefix}-{timestamp}/{self.prefix}-{timestamp}-{suffix}.jpg")
-
-            if progress:
-                print("\b" * (digits * 2 + 1) +
-                      f"{(i + 1):{digits}}/{length}", end="", flush=True)
-
+        result = writer.save(self.time, scrolled, title_width, progress)
         if progress:
             print()
-
-        return length
+        return result
 
     def no_change(self, prev: object) -> bool:
         if prev is None:
