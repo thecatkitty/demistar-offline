@@ -69,7 +69,7 @@ class RoomDisplay:
 
         # Room
         draw.text((HOST_SIZE / 2, top_half.height - 2 * HOST_SIZE),
-                  self.room_caption, "#fff", font=self.fonts['spotl'], stroke_width=TITLE_STROKE, stroke_fill="#000")
+                  self.room_caption, textdraw.FILL, font=self.fonts['spotl'], stroke_width=TITLE_STROKE, stroke_fill=textdraw.STROKE)
 
         scrolled = list()
         title_width = img.width - LIST_SIZE * 4
@@ -78,9 +78,9 @@ class RoomDisplay:
         y_offset = top_half.height
         for meeting in self.upcoming:
             draw.text((LIST_SIZE * 0.5, y_offset + LIST_SIZE * 0.5),
-                      meeting.start.strftime("%H:%M"), "#fff", font=self.fonts['listl'])
+                      meeting.start.strftime("%H:%M"), textdraw.FILL, font=self.fonts['listl'])
             draw.text((LIST_SIZE * 3.5, y_offset + LIST_SIZE * 1.75),
-                      meeting.host, "#fff", font=self.fonts['lists'])
+                      meeting.host, textdraw.FILL, font=self.fonts['lists'])
 
             _, _, width, height = draw.textbbox(
                 (0, 0), meeting.title, font=self.fonts['listl'])
@@ -90,20 +90,20 @@ class RoomDisplay:
                     width, height, meeting.title, self.fonts['listl'])))
             else:
                 draw.text((LIST_SIZE * 3.5, y_offset + LIST_SIZE / 2),
-                          meeting.title, "#fff", font=self.fonts['listl'])
+                          meeting.title, textdraw.FILL, font=self.fonts['listl'])
 
             y_offset += LIST_ROW
 
         # Featured header
         y_offset = img.height - LIST_ROW * 3.5
         draw.text((LIST_SIZE / 2, y_offset + TITLE_SIZE),
-                  self.featured_caption, "#fff", font=self.fonts['spotl'])
+                  self.featured_caption, textdraw.FILL, font=self.fonts['spotl'])
         y_offset += LIST_ROW * 1.5
 
         # Featured appointments
         for meeting in self.featured:
             draw.text((LIST_SIZE * 0.5, y_offset + LIST_SIZE * 0.5),
-                      meeting.start.strftime("%H:%M"), "#fff", font=self.fonts['listl'])
+                      meeting.start.strftime("%H:%M"), textdraw.FILL, font=self.fonts['listl'])
 
             _, _, width, height = draw.textbbox(
                 (0, 0), meeting.title, font=self.fonts['listl'])
@@ -112,7 +112,7 @@ class RoomDisplay:
                 scrolled.append((position, textdraw.render(
                     width, height, meeting.title, self.fonts['listl'])))
             else:
-                draw.text(position, meeting.title, "#fff",
+                draw.text(position, meeting.title, textdraw.FILL,
                           font=self.fonts['listl'])
 
             y_offset += LIST_ROW

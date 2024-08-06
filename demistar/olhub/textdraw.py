@@ -1,12 +1,12 @@
 from PIL import Image, ImageDraw
 
-fill = "#fff"
-stroke = "#000"
+FILL = "#fff"
+STROKE = "#000"
 
 
 def center(draw: ImageDraw, text: str, top: int, width: int, **kwargs):
     _, _, w, _ = draw.textbbox((0, 0), text, **kwargs)
-    draw.text(((width - w) / 2, top), text, fill, stroke_fill=stroke, **kwargs)
+    draw.text(((width - w) / 2, top), text, FILL, stroke_fill=STROKE, **kwargs)
 
 
 def render(width: int, height: int, text: str, font) -> Image.Image:

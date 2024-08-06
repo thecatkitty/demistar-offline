@@ -46,11 +46,11 @@ class HubDisplay:
         y_offset = top_img.height
         for meeting in self.upcoming:
             draw.text((LIST_SIZE * 0.5, y_offset + LIST_SIZE * 0.05),
-                      meeting.start.strftime("%H:%M"), "#fff", font=self.fonts['listl'])
+                      meeting.start.strftime("%H:%M"), textdraw.FILL, font=self.fonts['listl'])
             draw.text((LIST_SIZE * 3.5, y_offset + LIST_SIZE * 1.1),
-                      meeting.host, "#fff", font=self.fonts['lists'])
+                      meeting.host, textdraw.FILL, font=self.fonts['lists'])
             draw.text((img.width - LIST_SIZE * 1.5, y_offset + LIST_SIZE * 0.05),
-                      self.rooms[meeting.room][1], "#fff", font=self.fonts['listl'])
+                      self.rooms[meeting.room][1], textdraw.FILL, font=self.fonts['listl'])
 
             _, _, width, height = draw.textbbox(
                 (0, 0), meeting.title, font=self.fonts['listl'])
@@ -60,7 +60,7 @@ class HubDisplay:
                     width, height, meeting.title, self.fonts['listl'])))
             else:
                 draw.text((LIST_SIZE * 3.5, y_offset + LIST_SIZE * 0.05),
-                          meeting.title, "#fff", font=self.fonts['listl'])
+                          meeting.title, textdraw.FILL, font=self.fonts['listl'])
 
             y_offset += LIST_ROW
 
